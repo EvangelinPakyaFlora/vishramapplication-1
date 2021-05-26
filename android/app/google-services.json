@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "629138619269",
+    "project_id": "vishramapp-a9b99",
+    "storage_bucket": "vishramapp-a9b99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629138619269:android:b24c2798b26246d04722ec",
+        "android_client_info": {
+          "package_name": "com.example.vishramapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629138619269-1ghqqq669bm57hdt0epe8ts01v19q3do.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vishramapp",
+            "certificate_hash": "874bdc9cf48eb52e919bf2238dc83361290031db"
+          }
+        },
+        {
+          "client_id": "629138619269-mt6c9r0r13cbrhouvr54c8fkdfakbsl5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBp7YqBEUW1hl-nF78Q5MFeiDbabe05IU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629138619269-mt6c9r0r13cbrhouvr54c8fkdfakbsl5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
