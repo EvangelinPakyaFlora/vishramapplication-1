@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vishramapp/e_wallet.dart';
 import 'package:vishramapp/edit_profile.dart';
+import 'package:vishramapp/ewallet_page.dart';
 
 
 

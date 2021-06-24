@@ -36,6 +36,21 @@ dependencies:
   sms_autofill: ^1.2.6
   pinput: ^0.2.6
   circular_countdown_timer: ^0.0.8
+  url_launcher: ^5.7.10
+  js: ^0.6.2
+  image_picker: ^0.6.7+22
+  permission_handler: ^5.0.1+1
+  firebase_messaging: 5.1.2
+  country_state_city_picker: ^1.2.7
+  csc_picker: ^0.2.5
+  shared_preferences: ^0.5.12+4
+  cloud_firestore: null
+
+
+
+
+
+
 
 dev_dependencies:
   flutter_test:
