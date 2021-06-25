@@ -32,10 +32,8 @@ class Createaccount extends StatefulWidget {
   @override
   _CreateaccountState createState() => _CreateaccountState();
 }
-
 class _CreateaccountState extends State<Createaccount> {
   FirebaseAuth _auth;
-
   User _user;
   bool isLoading = true;
   String _name, _dob, _address, _state, _city, _pin, _email, _phone;
@@ -51,7 +49,6 @@ class _CreateaccountState extends State<Createaccount> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   String valueChoose;
   String valueChooseState;
-
   List<String> listItemCity = [
     "chennai",
     "cbe",
@@ -136,10 +133,13 @@ class _CreateaccountState extends State<Createaccount> {
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
   CountryCode countryCode;
   final phoneController = TextEditingController();
+  final nameController = TextEditingController();
+  final addressController = TextEditingController();
+  final dobController = TextEditingController();
+
   final otpController = TextEditingController();
   TextEditingController _controller = TextEditingController();
   String verificationId;
-
   bool showLoading = false;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool _validate = false;
@@ -163,8 +163,10 @@ class _CreateaccountState extends State<Createaccount> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Home1()));
         User updateUser = FirebaseAuth.instance.currentUser;
-        updateUser.updateProfile(displayName: phoneController.text);
-        userSetup(phoneController.text);
+        updateUser.updateProfile(displayName: nameController.text,);
+        //updateUser.updateProfile(displayAddress: addressController.text);
+        userSetup(nameController.text,addressController.text,dobController.text);
+
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -226,6 +228,7 @@ String value;
                 elevation: 18,
                 shadowColor: Colors.black,
                 child: TextFormField(
+                  controller: nameController,
                   cursorHeight: 20,
                   maxLines: 1,
                   decoration: InputDecoration(
@@ -280,8 +283,10 @@ String value;
                 elevation: 18,
                 shadowColor: Colors.black,
                 child: TextFormField(
+                  controller: dobController,
                   maxLines: 1,
                   cursorHeight: 20,
+
                   autovalidate: _validate,
                   validator: (String value) {
                     if (value.isEmpty) {
@@ -327,6 +332,7 @@ String value;
                 elevation: 18,
                 shadowColor: Colors.black,
                 child: TextFormField(
+                  controller: addressController,
                   autovalidate: _validate,
                   style: TextStyle(color: Colors.black),
                   validator: (String value) {

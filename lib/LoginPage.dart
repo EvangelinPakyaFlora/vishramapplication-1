@@ -118,9 +118,7 @@ String _phone;
     try {
       final authCredential =
       await _auth.signInWithCredential(phoneAuthCredential);
-      User updateUser = FirebaseAuth.instance.currentUser;
-      updateUser.updateProfile(displayName: phoneController.text);
-      userSetup(phoneController.text);
+
       setState(() {
         showLoading = false;
       });
