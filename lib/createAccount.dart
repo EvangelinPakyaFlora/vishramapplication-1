@@ -4,12 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import 'package:vishramapp/Status.dart';
 import 'package:vishramapp/firebase_net.dart';
 import 'package:vishramapp/home_screen.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -136,7 +136,6 @@ class _CreateaccountState extends State<Createaccount> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final dobController = TextEditingController();
-
   final otpController = TextEditingController();
   TextEditingController _controller = TextEditingController();
   String verificationId;
@@ -145,6 +144,7 @@ class _CreateaccountState extends State<Createaccount> {
   bool _validate = false;
   String pinCode="";
   void signInWithPhoneAuthCredential(
+
       PhoneAuthCredential phoneAuthCredential) async {
     setState(() {
       showLoading = true;
@@ -152,21 +152,27 @@ class _CreateaccountState extends State<Createaccount> {
     try {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
-
       setState(() {
         showLoading = false;
       });
 
-
-
+      var uid1=authCredential.user.uid;
       if (authCredential?.user != null) {
+
+        if (uid1=="ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => StatusInfo()));
+        }else{
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Home1()));
+        }
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Home1()));
+
         User updateUser = FirebaseAuth.instance.currentUser;
         updateUser.updateProfile(displayName: nameController.text,);
         //updateUser.updateProfile(displayAddress: addressController.text);
-        userSetup(nameController.text,addressController.text,dobController.text);
-
+        userSetup(nameController.text,addressController.text,dobController.text,phoneController.text);
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -176,10 +182,7 @@ class _CreateaccountState extends State<Createaccount> {
           .showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
-
-
-
-String value;
+  String value;
 //String _code;
   getMobileFormWidget(context) {
     return Scaffold(
@@ -189,7 +192,7 @@ String value;
           autovalidate: _validate,
           child: Column(mainAxisSize: MainAxisSize.max, children: [
             Container(
-              height: 150,
+              height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                   color: Colors.tealAccent[700],
@@ -220,18 +223,29 @@ String value;
                   ]),
             ),
             SizedBox(
-              height: 30,
+              height: 35,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                elevation: 18,
-                shadowColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: TextFormField(
                   controller: nameController,
                   cursorHeight: 20,
                   maxLines: 1,
                   decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       contentPadding: EdgeInsets.all(8.0),
                       labelText: "Name",
                       labelStyle: TextStyle(
@@ -241,23 +255,17 @@ String value;
                         Icons.person,
                         color: Colors.tealAccent[700],
                       ),
-                      fillColor: Colors.white,
-
-                      filled: true,
                       enabledBorder:
-                          OutlineInputBorder(borderSide: BorderSide.none),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
+                          OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.tealAccent[700], width: 1))),
+                              BorderSide(color: Colors.tealAccent[700], width: 1))
+                  ),
                   autovalidate: _validate,
                   textAlign: TextAlign.start,
                   style: TextStyle(color: Colors.black),
-
                   validator: (String value) {
                     if (value.isEmpty) {
                       return "Please Enter Name";
@@ -268,25 +276,31 @@ String value;
                     _name = name;
                   },
                   autocorrect: true,
-                 /*onChanged: (text){
-                    value =text;
-                 },*/
                 ),
               ),
             ),
+            // Icons.calendar_today_outlined,
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                elevation: 18,
-                shadowColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: TextFormField(
                   controller: dobController,
                   maxLines: 1,
                   cursorHeight: 20,
-
                   autovalidate: _validate,
                   validator: (String value) {
                     if (value.isEmpty) {
@@ -300,37 +314,45 @@ String value;
                   style: TextStyle(color: Colors.black),
                   autocorrect: true,
                   decoration: InputDecoration(
-                      enabledBorder:
-                      OutlineInputBorder(borderSide: BorderSide.none),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                      ),
+                      fillColor: Colors.white,
+                      filled: true,
                       contentPadding: EdgeInsets.all(8.0),
+                      labelText: "D.O.B",
+                      labelStyle: TextStyle(
+                          color: Colors.black, fontStyle: FontStyle.normal),
                       hintText: "DD/MM/YEAR",
                       prefixIcon: Icon(
                         Icons.calendar_today_outlined,
                         color: Colors.tealAccent[700],
                       ),
-                      labelText: "D.O.B",
-                      labelStyle: TextStyle(
-                          color: Colors.black, fontStyle: FontStyle.normal),
-
+                      enabledBorder:
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      ),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.tealAccent[700], width: 1))),
+                          BorderSide(color: Colors.tealAccent[700], width: 1))
+                      ),
                 ),
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                elevation: 18,
-                shadowColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: TextFormField(
                   controller: addressController,
                   autovalidate: _validate,
@@ -346,40 +368,46 @@ String value;
                   },
                   autocorrect: true,
                   decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10.0),
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(8.0),
+                      labelText: "Address",
+                      labelStyle: TextStyle(
+                          color: Colors.black, fontStyle: FontStyle.normal),
+                      hintText: "Address",
+                      prefixIcon: Icon(
+                        Icons.note,
+                        color: Colors.tealAccent[700],
                       ),
-                    ),
-                    labelText: "Address",
-                    labelStyle: TextStyle(
-                        color: Colors.black, fontStyle: FontStyle.normal),
-                    hintText: "Address",
-
-                    focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.tealAccent[700], width: 1)),
-                    contentPadding: EdgeInsets.all(8.0),
-                    prefixIcon: Icon(
-                      Icons.note,
-                      color: Colors.tealAccent[700],
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      borderSide: BorderSide(color: Colors.white, width: 2),
-                    ),
+                      enabledBorder:
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                          BorderSide(color: Colors.tealAccent[700], width: 1))
                   ),
                 ),
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                elevation: 18,
-                shadowColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -440,13 +468,23 @@ String value;
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                elevation: 18,
-                shadowColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -502,13 +540,22 @@ String value;
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Material(
-                  elevation: 18,
-                  shadowColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25.0),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0,5),
+                        blurRadius: 5.0,
+                        color: Colors.black.withOpacity(0.10),
+                      ),
+                    ],
+                  ),
                   child: TextFormField(
                     autovalidate: _validate,
                     validator: (String value) {
@@ -523,38 +570,45 @@ String value;
                     style: TextStyle(color: Colors.black),
                     autocorrect: true,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(8),
-                      hintText: "Pincode",
-                      labelText: "Pincode",
-                      labelStyle: TextStyle(
-                          color: Colors.black, fontStyle: FontStyle.normal),
-                      enabledBorder:
-                      OutlineInputBorder(borderSide: BorderSide.none),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: EdgeInsets.all(8.0),
+                        labelText: "Pincode",
+                        labelStyle: TextStyle(
+                            color: Colors.black, fontStyle: FontStyle.normal),
+                        hintText: "629602",
+                        prefixIcon: Icon(
+                          Icons.location_on_outlined,
+                          color: Colors.tealAccent[700],
                         ),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.location_on_outlined,
-                        color: Colors.tealAccent[700],
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.tealAccent[700], width: 1)),
-
+                        enabledBorder:
+                        OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.tealAccent[700], width: 1))
                     ),
                   ),
                 ),
               ),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                shadowColor: Colors.black,
-                elevation: 18,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: TextFormField(
                   controller: _controller,
                   autovalidate: _validate,
@@ -574,39 +628,49 @@ String value;
                   },
                   style: TextStyle(color: Colors.black),
                   autocorrect: true,
+
                   decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.tealAccent[700], width: 1)),
-                    contentPadding: EdgeInsets.all(8),
-                    prefixIcon: Icon(
-                      Icons.email_outlined,
-                      color: Colors.tealAccent[700],
-                    ),
-                    hintText: "example@gmail.com",
-labelText: "email",
-                     labelStyle: TextStyle(
-                      color: Colors.black, fontStyle: FontStyle.normal),
-                    enabledBorder:
-                    OutlineInputBorder(borderSide: BorderSide.none),
-                    border: new OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10.0),
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(8.0),
+                      labelText: "email",
+                      labelStyle: TextStyle(
+                          color: Colors.black, fontStyle: FontStyle.normal),
+                      hintText: "email@gmail.com",
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: Colors.tealAccent[700],
                       ),
-                    ),
+                      enabledBorder:
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                          BorderSide(color: Colors.tealAccent[700], width: 1))
 
                   ),
                 ),
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                shadowColor: Colors.black,
-                elevation: 18,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: Row(
                   children: [
                     CountryCodePicker(
@@ -841,15 +905,15 @@ labelText: "email",
                     style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.grey,
-                        fontStyle: FontStyle.italic),
+                        fontStyle: FontStyle.normal),
                   ),
                   InkWell(
                     child: Text(
-                      ' Sign',
+                      'Resend otp',
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           color: Colors.tealAccent[700],
-                          fontStyle: FontStyle.italic),
+                          fontStyle: FontStyle.normal),
                     ),
                     onTap: () {},
                   ),
@@ -859,7 +923,18 @@ labelText: "email",
                 height: 20,
               ),
               Container(
-                decoration: BoxDecoration(color: Colors.tealAccent[700]),
+                width: 250,
+                decoration: BoxDecoration(
+                  color: Colors.tealAccent[700],
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
                 child: FlatButton(
                   onPressed: () async {
                     print(verificationId);
@@ -880,9 +955,10 @@ labelText: "email",
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => Home1()));
                   },*/
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(22.0),
+                  // ),
+
                   child: Text("Verify &Proceed"),
                   textColor: Colors.white,
                 ),

@@ -147,7 +147,6 @@ class _SettingspageState extends State<Settingspage> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: FlatButton(
-                            
                             child: Container(
                               height: 55,
                               width: 170,
@@ -175,61 +174,61 @@ class _SettingspageState extends State<Settingspage> {
               ],
             ),
           ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 30,right: 30),
-                child: Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 7,
-                              offset: Offset(0, 4),),
-
-                          ],
-                          color: Colors.tealAccent[700],
-                          borderRadius: BorderRadius.circular(20)),
-                      height: 55,
-                      width: 55,
-                      child: Icon(
-                        Icons.account_balance_wallet_rounded,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30.0, right: 30),
-                      child: Container(
-                        height: 50,
-                        width: 160,
-                        child: FlatButton(
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Ewallet()),
-                            );
-                          },
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "e-Wallet",
-                              style:
-                              TextStyle(fontSize: 25, color: Colors.black,),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    ),Icon(
-                      Icons.arrow_forward_ios,
-                    ),
-
-                  ],
-                ),
-              )
-            ],
-          ),
+          // Column(
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.only(left: 30,right: 30),
+          //       child: Row(
+          //         children: [
+          //           Container(
+          //             decoration: BoxDecoration(
+          //                 boxShadow: [
+          //                   BoxShadow(color: Colors.grey.withOpacity(0.5),
+          //                     spreadRadius: 1,
+          //                     blurRadius: 7,
+          //                     offset: Offset(0, 4),),
+          //
+          //                 ],
+          //                 color: Colors.tealAccent[700],
+          //                 borderRadius: BorderRadius.circular(20)),
+          //             height: 55,
+          //             width: 55,
+          //             child: Icon(
+          //               Icons.account_balance_wallet_rounded,
+          //               color: Colors.white,
+          //               size: 40,
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: const EdgeInsets.only(left: 30.0, right: 30),
+          //             child: Container(
+          //               height: 50,
+          //               width: 160,
+          //               child: FlatButton(
+          //                 onPressed: (){
+          //                   Navigator.push(context, MaterialPageRoute(builder: (context)=> Ewallet()),
+          //                   );
+          //                 },
+          //                 child: Align(
+          //                   alignment: Alignment.centerLeft,
+          //                   child: Text(
+          //                     "e-Wallet",
+          //                     style:
+          //                     TextStyle(fontSize: 25, color: Colors.black,),
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //
+          //           ),Icon(
+          //             Icons.arrow_forward_ios,
+          //           ),
+          //
+          //         ],
+          //       ),
+          //     )
+          //   ],
+          // ),
           Column(
             children: [
               Padding(

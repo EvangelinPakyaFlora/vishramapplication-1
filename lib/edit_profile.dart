@@ -1,13 +1,87 @@
-
 import 'dart:io';
-
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdownfield/dropdownfield.dart';
 import 'package:vishramapp/Settings.dart';
 import 'package:image_picker/image_picker.dart';
 void main() {
   runApp(MaterialApp(
+    supportedLocales: [
+      Locale("af"),
+      Locale("am"),
+      Locale("ar"),
+      Locale("az"),
+      Locale("be"),
+      Locale("bg"),
+      Locale("bn"),
+      Locale("bs"),
+      Locale("ca"),
+      Locale("cs"),
+      Locale("da"),
+      Locale("de"),
+      Locale("el"),
+      Locale("en"),
+      Locale("es"),
+      Locale("et"),
+      Locale("fa"),
+      Locale("fi"),
+      Locale("fr"),
+      Locale("gl"),
+      Locale("ha"),
+      Locale("he"),
+      Locale("hi"),
+      Locale("hr"),
+      Locale("hu"),
+      Locale("hy"),
+      Locale("id"),
+      Locale("is"),
+      Locale("it"),
+      Locale("ja"),
+      Locale("ka"),
+      Locale("kk"),
+      Locale("km"),
+      Locale("ko"),
+      Locale("ku"),
+      Locale("ky"),
+      Locale("lt"),
+      Locale("lv"),
+      Locale("mk"),
+      Locale("ml"),
+      Locale("mn"),
+      Locale("ms"),
+      Locale("nb"),
+      Locale("nl"),
+      Locale("nn"),
+      Locale("no"),
+      Locale("pl"),
+      Locale("ps"),
+      Locale("pt"),
+      Locale("ro"),
+      Locale("ru"),
+      Locale("sd"),
+      Locale("sk"),
+      Locale("sl"),
+      Locale("so"),
+      Locale("sq"),
+      Locale("sr"),
+      Locale("sv"),
+      Locale("ta"),
+      Locale("tg"),
+      Locale("th"),
+      Locale("tk"),
+      Locale("tr"),
+      Locale("tt"),
+      Locale("uk"),
+      Locale("ug"),
+      Locale("ur"),
+      Locale("uz"),
+      Locale("vi"),
+      Locale("zh")
+    ],
+    localizationsDelegates: [
+      CountryLocalizations.delegate,
+    ],
     debugShowCheckedModeBanner: false,
     home: Editprofile(),
   ));
@@ -122,8 +196,7 @@ class _EditprofileState extends State<Editprofile> {
         body: SingleChildScrollView(
           child: Column(children: [
             Container(
-
-              height: 150,
+              height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                   color: Colors.tealAccent[700],
@@ -175,103 +248,112 @@ class _EditprofileState extends State<Editprofile> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: 350,
-              child: TextField(
-                decoration: InputDecoration(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Container(
+                width: 350,
+                child: TextField(
+                  decoration: InputDecoration(
 
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.tealAccent[700]),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                  labelText: 'Name',
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: 'Name',
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.person,
-                    color: Colors.tealAccent[700],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 350,
-              child: TextField(
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.tealAccent[700]),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                  labelText: 'D.O.B',
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: 'DD/MM/YEAR',
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.calendar_today_outlined,
-                    color: Colors.tealAccent[700],
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.tealAccent[700]),
+                    ),
+                    contentPadding:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                    labelText: 'Name',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: 'Name',
+                    hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.tealAccent[700],
+                    ),
                   ),
                 ),
               ),
             ),
             SizedBox(
               height: 10,
-            ),
-            Container(
-              width: 350,
-              child: TextField(
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.tealAccent[700]),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                  labelText: 'Address line 1',
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: 'Address',
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.library_books_outlined,
-                    color: Colors.tealAccent[700],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 350,
-              child: TextField(
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.tealAccent[700]),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                  labelText: 'Address line 2',
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: 'Address',
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.library_books_outlined,
-                    color: Colors.tealAccent[700],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 0,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Row(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Container(
+                width: 350,
+                child: TextField(
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.tealAccent[700]),
+                    ),
+                    contentPadding:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                    labelText: 'D.O.B',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: 'DD/MM/YEAR',
+                    hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.calendar_today_outlined,
+                      color: Colors.tealAccent[700],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Container(
+                width: 350,
+                child: TextField(
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.tealAccent[700]),
+                    ),
+                    contentPadding:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                    labelText: 'Address line 1',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: 'Address',
+                    hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.library_books_outlined,
+                      color: Colors.tealAccent[700],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Container(
+                width: 350,
+                child: TextField(
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.tealAccent[700]),
+                    ),
+                    contentPadding:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                    labelText: 'Address line 2',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: 'Address',
+                    hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.library_books_outlined,
+                      color: Colors.tealAccent[700],
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 35),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
@@ -280,7 +362,7 @@ class _EditprofileState extends State<Editprofile> {
                     color: Colors.tealAccent[700],
                   ),
                   SizedBox(
-                    width: 280,
+                    width: 290,
                     child: DropdownButtonFormField(
                         hint: Text(
                           "City",
@@ -288,6 +370,7 @@ class _EditprofileState extends State<Editprofile> {
                         dropdownColor: Colors.white,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 36,
+                        elevation: 16,
                         isExpanded: true,
                         style: TextStyle(color: Colors.black, fontSize: 15),
                         value: valueChooseCity,
@@ -308,81 +391,72 @@ class _EditprofileState extends State<Editprofile> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 17),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Row(children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.location_city,
-                      size: 25,
-                      color: Colors.tealAccent[700],
-                    ),
-                    SizedBox(
-                      width: 150,
-                      child: DropdownButtonFormField(
-                          hint: Text(
-                            "State",
-                          ),
-
-                          dropdownColor: Colors.white,
-                          icon: Icon(Icons.arrow_drop_down),
-                          iconSize: 36,
-                          isExpanded: true,
-                          style: TextStyle(color: Colors.black, fontSize: 15),
-                          value: valueChooseState,
-                          onChanged: (newValue) {
-                            setState(() {
-                              valueChooseState = newValue;
-                            });
-                          },
-                          items: listItemState.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList()),
-                    ),
-                  ],
+                Icon(
+                  Icons.location_city,
+                  size: 25,
+                  color: Colors.tealAccent[700],
                 ),
+                SizedBox(
+                  width: 130,
+                  child: DropdownButtonFormField(
+                      hint: Text(
+                        "State",
+                      ),
+
+                      dropdownColor: Colors.white,
+                      icon: Icon(Icons.arrow_drop_down),
+                      iconSize: 36,
+                      isExpanded: true,
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                      value: valueChooseState,
+                      onChanged: (newValue) {
+                        setState(() {
+                          valueChooseState = newValue;
+                        });
+                      },
+                      items: listItemState.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList()),
+                ),
+                Spacer(),
 
                 SizedBox(
-                  width: 150,
+                  width: 155,
+                  child: Container(
+                    child: DropdownButtonFormField(
+                      value: valueChoosePin,
+                      onChanged: (newValue) {
+                        setState(() {
+                          valueChoosePin = newValue;
+                        });
+                      },
+                      items: listItemPin.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList(),
+                      icon: Icon(Icons.arrow_drop_down),
+                      iconSize: 36,
+                      isExpanded: true,
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 1.0),
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: Container(
-                      child: DropdownButtonFormField(
-                        value: valueChoosePin,
-                        onChanged: (newValue) {
-                          setState(() {
-                            valueChoosePin = newValue;
-                          });
-                        },
-                        items: listItemPin.map((valueItem) {
-                          return DropdownMenuItem(
-                            value: valueItem,
-                            child: Text(valueItem),
-                          );
-                        }).toList(),
-                        icon: Icon(Icons.arrow_drop_down),
-                        iconSize: 36,
-                        isExpanded: true,
-                        style: TextStyle(color: Colors.black, fontSize: 15),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 1.0),
-
-                          labelText: 'PinCode',
-                          labelStyle: TextStyle(color: Colors.black),
-                          hintText: 'PinCode',
-                          hintStyle:
-                          TextStyle(fontSize: 10.0, color: Colors.black),
-                          prefixIcon: Icon(
-                            Icons.location_on,
-                            color: Colors.tealAccent[700],
-                          ),
+                        labelText: 'PinCode',
+                        labelStyle: TextStyle(color: Colors.black),
+                        hintText: 'PinCode',
+                        hintStyle:
+                        TextStyle(fontSize: 10.0, color: Colors.black),
+                        prefixIcon: Icon(
+                          Icons.location_on,
+                          color: Colors.tealAccent[700],
                         ),
                       ),
                     ),
@@ -429,22 +503,25 @@ class _EditprofileState extends State<Editprofile> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              width: 340,
-              child: TextField(
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.tealAccent[700]),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                  labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.black),
-                  //hintText: 'evangflora@gmail.com',
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.person,
-                    color: Colors.tealAccent[700],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 35),
+              child: Container(
+                width: 340,
+                child: TextField(
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.tealAccent[700]),
+                    ),
+                    contentPadding:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Colors.black),
+                    //hintText: 'evangflora@gmail.com',
+                    hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.tealAccent[700],
+                    ),
                   ),
                 ),
               ),
@@ -453,7 +530,7 @@ class _EditprofileState extends State<Editprofile> {
               height: 10,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 35),
               child: Row(
                 children: [
                   Container(
@@ -464,7 +541,7 @@ class _EditprofileState extends State<Editprofile> {
                   ),
                   VerticalDivider(
                     thickness: 1,
-                    width: 1,
+                    width: 0,
                     color: Colors.black,
                     indent: 15,
                     endIndent: 15,
@@ -507,10 +584,10 @@ class _EditprofileState extends State<Editprofile> {
               ),
             ),*/
             SizedBox(
-              height: 60,
+              height: 30,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
                   height: 37,

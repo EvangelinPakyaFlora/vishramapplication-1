@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:vishramapp/Status.dart';
 import 'package:vishramapp/cloudmessages/message.dart';
 import 'package:vishramapp/createAccount.dart';
 import 'package:vishramapp/firebase_net.dart';
@@ -15,9 +16,84 @@ void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MaterialApp(
-    localizationsDelegates: [
-      CountryLocalizations.delegate
+    supportedLocales: [
+      Locale("af"),
+      Locale("am"),
+      Locale("ar"),
+      Locale("az"),
+      Locale("be"),
+      Locale("bg"),
+      Locale("bn"),
+      Locale("bs"),
+      Locale("ca"),
+      Locale("cs"),
+      Locale("da"),
+      Locale("de"),
+      Locale("el"),
+      Locale("en"),
+      Locale("es"),
+      Locale("et"),
+      Locale("fa"),
+      Locale("fi"),
+      Locale("fr"),
+      Locale("gl"),
+      Locale("ha"),
+      Locale("he"),
+      Locale("hi"),
+      Locale("hr"),
+      Locale("hu"),
+      Locale("hy"),
+      Locale("id"),
+      Locale("is"),
+      Locale("it"),
+      Locale("ja"),
+      Locale("ka"),
+      Locale("kk"),
+      Locale("km"),
+      Locale("ko"),
+      Locale("ku"),
+      Locale("ky"),
+      Locale("lt"),
+      Locale("lv"),
+      Locale("mk"),
+      Locale("ml"),
+      Locale("mn"),
+      Locale("ms"),
+      Locale("nb"),
+      Locale("nl"),
+      Locale("nn"),
+      Locale("no"),
+      Locale("pl"),
+      Locale("ps"),
+      Locale("pt"),
+      Locale("ro"),
+      Locale("ru"),
+      Locale("sd"),
+      Locale("sk"),
+      Locale("sl"),
+      Locale("so"),
+      Locale("sq"),
+      Locale("sr"),
+      Locale("sv"),
+      Locale("ta"),
+      Locale("tg"),
+      Locale("th"),
+      Locale("tk"),
+      Locale("tr"),
+      Locale("tt"),
+      Locale("uk"),
+      Locale("ug"),
+      Locale("ur"),
+      Locale("uz"),
+      Locale("vi"),
+      Locale("zh")
     ],
+    localizationsDelegates: [
+      CountryLocalizations.delegate,
+    ],
+    // localizationsDelegates: [
+    //   CountryLocalizations.delegate
+    // ],
     debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
@@ -82,20 +158,15 @@ firebaseMessaging.getToken().then((token){
     });
   }
   final FirebaseAuth auth = FirebaseAuth.instance;
-
-
   Widget build(BuildContext context) {
     return Login();
   }
 }
-
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
-
 class _LoginState extends State<Login> {
-
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
   CountryCode countryCode=CountryCode(dialCode: "+91");
@@ -105,9 +176,12 @@ class _LoginState extends State<Login> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String pinCode="";
   String verificationId;
-String _phone;
+  String _phone;
   bool showLoading = false;
   String uid;
+  final nameController = TextEditingController();
+  final addressController = TextEditingController();
+  final dobController = TextEditingController();
 //bool authUser;
 //var user;
   void signInWithPhoneAuthCredential(
@@ -118,18 +192,32 @@ String _phone;
     try {
       final authCredential =
       await _auth.signInWithCredential(phoneAuthCredential);
+      print("phoneAuthCredential =======> " +phoneAuthCredential.toString());
 
       setState(() {
         showLoading = false;
       });
-      print(authCredential);
-
+      print("authCredential =======> " +authCredential.toString());
       if (authCredential.user != null) {
         uid = authCredential.toString();
-        print('uid ${uid}');
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home1()));
+       // print('uid ${uid}');
+        var uid1=authCredential.user.uid;
+        User updateUser = FirebaseAuth.instance.currentUser;
+        updateUser.updateProfile(displayName: nameController.text,);
+        //updateUser.updateProfile(displayAddress: addressController.text);
+        userSetup(nameController.text,addressController.text,dobController.text,phoneController.text);
+        if (uid1=="ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => StatusInfo()));
+        }else{
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Home1()));
+        }
       }
+      // if(authCredential.user == 8754793901){
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => StatusInfo()));
+      // }
     } on FirebaseAuthException catch (e) {
       setState(() {
         showLoading = false;
@@ -152,7 +240,7 @@ String _phone;
           key: _formkey,
           child: Column(
             children: [
-        //      Image.network("https://picsum.photos/250?image=9",height: 30,width: 30,),
+        //  Image.network("https://picsum.photos/250?image=9",height: 30,width: 30,),
               Container(
                 height: 200,
                 width: double.infinity,
@@ -287,7 +375,14 @@ String _phone;
                     side: BorderSide(color: Colors.greenAccent)),
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
+
                   child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.tealAccent[700],
+                        boxShadow: [
+                          BoxShadow(color: Colors.grey),
+                        ],
+                        ),
                     height: 25,
                     width: 140,
                     child: Align(
