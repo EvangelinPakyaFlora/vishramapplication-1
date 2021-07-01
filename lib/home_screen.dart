@@ -171,7 +171,7 @@ class _Home1State extends State<Home1> {
                   child: IconButton(
                     icon: const Icon(
                       Icons.call,
-                      color: Colors.green,
+                      color: Colors.transparent,
                     ),
                     onPressed: () {
                        launch("tel://7639292332");

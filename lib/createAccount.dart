@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,17 +7,91 @@ import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:vishramapp/Status.dart';
+import 'package:vishramapp/User.dart';
 import 'package:vishramapp/firebase_net.dart';
 import 'package:vishramapp/home_screen.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-void main() async{
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MaterialApp(
+    supportedLocales: [
+      Locale("af"),
+      Locale("am"),
+      Locale("ar"),
+      Locale("az"),
+      Locale("be"),
+      Locale("bg"),
+      Locale("bn"),
+      Locale("bs"),
+      Locale("ca"),
+      Locale("cs"),
+      Locale("da"),
+      Locale("de"),
+      Locale("el"),
+      Locale("en"),
+      Locale("es"),
+      Locale("et"),
+      Locale("fa"),
+      Locale("fi"),
+      Locale("fr"),
+      Locale("gl"),
+      Locale("ha"),
+      Locale("he"),
+      Locale("hi"),
+      Locale("hr"),
+      Locale("hu"),
+      Locale("hy"),
+      Locale("id"),
+      Locale("is"),
+      Locale("it"),
+      Locale("ja"),
+      Locale("ka"),
+      Locale("kk"),
+      Locale("km"),
+      Locale("ko"),
+      Locale("ku"),
+      Locale("ky"),
+      Locale("lt"),
+      Locale("lv"),
+      Locale("mk"),
+      Locale("ml"),
+      Locale("mn"),
+      Locale("ms"),
+      Locale("nb"),
+      Locale("nl"),
+      Locale("nn"),
+      Locale("no"),
+      Locale("pl"),
+      Locale("ps"),
+      Locale("pt"),
+      Locale("ro"),
+      Locale("ru"),
+      Locale("sd"),
+      Locale("sk"),
+      Locale("sl"),
+      Locale("so"),
+      Locale("sq"),
+      Locale("sr"),
+      Locale("sv"),
+      Locale("ta"),
+      Locale("tg"),
+      Locale("th"),
+      Locale("tk"),
+      Locale("tr"),
+      Locale("tt"),
+      Locale("uk"),
+      Locale("ug"),
+      Locale("ur"),
+      Locale("uz"),
+      Locale("vi"),
+      Locale("zh")
+    ],
     localizationsDelegates: [
-      CountryLocalizations.delegate
+      CountryLocalizations.delegate,
     ],
     home: Createaccount(),
   ));
@@ -32,13 +108,14 @@ class Createaccount extends StatefulWidget {
   @override
   _CreateaccountState createState() => _CreateaccountState();
 }
+
 class _CreateaccountState extends State<Createaccount> {
   FirebaseAuth _auth;
   User _user;
   bool isLoading = true;
   String _name, _dob, _address, _state, _city, _pin, _email, _phone;
 
-  @override
+
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -46,6 +123,7 @@ class _CreateaccountState extends State<Createaccount> {
     _user = _auth.currentUser;
     isLoading = false;
   }
+
   final FirebaseAuth auth = FirebaseAuth.instance;
   String valueChoose;
   String valueChooseState;
@@ -132,6 +210,10 @@ class _CreateaccountState extends State<Createaccount> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
   CountryCode countryCode;
+  final pinCodeController = TextEditingController();
+  final stateController = TextEditingController();
+
+  //final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
   final addressController = TextEditingController();
@@ -142,38 +224,38 @@ class _CreateaccountState extends State<Createaccount> {
   bool showLoading = false;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool _validate = false;
-  String pinCode="";
-  void signInWithPhoneAuthCredential(
+  String pinCode = "";
 
+  void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
     setState(() {
       showLoading = true;
     });
     try {
       final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
+      await _auth.signInWithCredential(phoneAuthCredential);
       setState(() {
         showLoading = false;
       });
-
-      var uid1=authCredential.user.uid;
+      var uid1 = authCredential.user.uid;
       if (authCredential?.user != null) {
+        print("authCredential ====> " + authCredential.toString());
+        getUserDetails(uid1,context);
 
-        if (uid1=="ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => StatusInfo()));
-        }else{
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Home1()));
-        }
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home1()));
+        // if (uid1 == "ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
+        //   Navigator.push(
+        //       context, MaterialPageRoute(builder: (context) => StatusInfo()));
+        // } else {
+        //   Navigator.push(
+        //       context, MaterialPageRoute(builder: (context) => Home1()));
+        // }
 
-        User updateUser = FirebaseAuth.instance.currentUser;
-        updateUser.updateProfile(displayName: nameController.text,);
-        //updateUser.updateProfile(displayAddress: addressController.text);
-        userSetup(nameController.text,addressController.text,dobController.text,phoneController.text);
-      }
+      //   User updateUser = FirebaseAuth.instance.currentUser;
+      //   updateUser.updateProfile(displayName: nameController.text,);
+      //   userSetup(
+      //       nameController.text, dobController.text, addressController.text,
+      //       pinCodeController.text, _controller.text, phoneController.text);
+       }
     } on FirebaseAuthException catch (e) {
       setState(() {
         showLoading = false;
@@ -182,9 +264,11 @@ class _CreateaccountState extends State<Createaccount> {
           .showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
+
   String value;
-//String _code;
+
   getMobileFormWidget(context) {
+    MediaQueryData deviceInfo = MediaQuery.of(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Form(
@@ -205,7 +289,10 @@ class _CreateaccountState extends State<Createaccount> {
                   ],
                   borderRadius: BorderRadius.vertical(
                       bottom: Radius.elliptical(
-                          MediaQuery.of(context).size.width, 250.0))),
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width, 250.0))),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -233,7 +320,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(25.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -256,12 +343,14 @@ class _CreateaccountState extends State<Createaccount> {
                         color: Colors.tealAccent[700],
                       ),
                       enabledBorder:
-                          OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                              borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius
+                          .circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50],
+                            width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.tealAccent[700], width: 1))
+                          BorderSide(color: Colors.tealAccent[700], width: 1))
                   ),
                   autovalidate: _validate,
                   textAlign: TextAlign.start,
@@ -291,7 +380,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(25.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -326,13 +415,15 @@ class _CreateaccountState extends State<Createaccount> {
                         color: Colors.tealAccent[700],
                       ),
                       enabledBorder:
-                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius
+                          .circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50],
+                            width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
                           BorderSide(color: Colors.tealAccent[700], width: 1))
-                      ),
+                  ),
                 ),
               ),
             ),
@@ -347,7 +438,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(25.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -380,8 +471,10 @@ class _CreateaccountState extends State<Createaccount> {
                         color: Colors.tealAccent[700],
                       ),
                       enabledBorder:
-                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius
+                          .circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50],
+                            width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
@@ -402,7 +495,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(15.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -419,6 +512,7 @@ class _CreateaccountState extends State<Createaccount> {
                     SizedBox(
                       width: 280,
                       child: DropdownButtonFormField(
+                        // controller: stateController,
                           validator: (String value) {
                             if (value.isEmpty) {
                               return "Please Enter state";
@@ -429,9 +523,10 @@ class _CreateaccountState extends State<Createaccount> {
                             _state = state;
                           },
                           decoration: InputDecoration(
-                            labelText: "State",
+                              labelText: "State",
                               labelStyle: TextStyle(
-                                  color: Colors.black, fontStyle: FontStyle.normal),
+                                  color: Colors.black,
+                                  fontStyle: FontStyle.normal),
                               border: new OutlineInputBorder(
                                 borderRadius: const BorderRadius.all(
                                   const Radius.circular(10.0),
@@ -479,7 +574,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(15.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -496,102 +591,50 @@ class _CreateaccountState extends State<Createaccount> {
                     SizedBox(
                       width: 280,
                       child: DropdownButtonFormField(
-                          value: valueChoose,
-                          onChanged: (newValue) {
-                            setState(() {
-                              valueChoose = newValue;
-                            });
-                          },
-                          items: listItemCity.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList(),
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return "Please Enter city";
-                            }
-                            return null;
-                          },
-                          onSaved: (String city) {
-                            _city = city;
-                          },
-                          decoration: InputDecoration(
+                        value: valueChoose,
+                        onChanged: (newValue) {
+                          setState(() {
+                            valueChoose = newValue;
+                          });
+                        },
+                        items: listItemCity.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(valueItem),
+                          );
+                        }).toList(),
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return "Please Enter city";
+                          }
+                          return null;
+                        },
+                        onSaved: (String city) {
+                          _city = city;
+                        },
+                        decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(1),
-                              hintText: "TamilNadu",
-                              labelText: "City",
-                              labelStyle: TextStyle(
-                                  color: Colors.black, fontStyle: FontStyle.normal),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.tealAccent, width: 1)),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white))),
-                          dropdownColor: Colors.white,
-                          icon: Icon(Icons.arrow_drop_down),
-                          iconSize: 36,
-                          isExpanded: true,
-                          style: TextStyle(color: Colors.black, fontSize: 15),
-                          ),
+                            hintText: "TamilNadu",
+                            labelText: "City",
+                            labelStyle: TextStyle(
+                                color: Colors.black,
+                                fontStyle: FontStyle.normal),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.tealAccent, width: 1)),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white))),
+                        dropdownColor: Colors.white,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 36,
+                        isExpanded: true,
+                        style: TextStyle(color: Colors.black, fontSize: 15),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(
-              height: 15,
-            ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25.0),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0,5),
-                        blurRadius: 5.0,
-                        color: Colors.black.withOpacity(0.10),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    autovalidate: _validate,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Please Enter pin";
-                      }
-                      return null;
-                    },
-                    onSaved: (String pin) {
-                      _pin = pin;
-                    },
-                    style: TextStyle(color: Colors.black),
-                    autocorrect: true,
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: EdgeInsets.all(8.0),
-                        labelText: "Pincode",
-                        labelStyle: TextStyle(
-                            color: Colors.black, fontStyle: FontStyle.normal),
-                        hintText: "629602",
-                        prefixIcon: Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.tealAccent[700],
-                        ),
-                        enabledBorder:
-                        OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.tealAccent[700], width: 1))
-                    ),
-                  ),
-                ),
-              ),
             SizedBox(
               height: 15,
             ),
@@ -603,7 +646,63 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(25.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    ),
+                  ],
+                ),
+                child: TextFormField(
+                  controller: pinCodeController,
+                  autovalidate: _validate,
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return "Please Enter pin";
+                    }
+                    return null;
+                  },
+                  onSaved: (String pin) {
+                    _pin = pin;
+                  },
+                  style: TextStyle(color: Colors.black),
+                  autocorrect: true,
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(8.0),
+                      labelText: "Pincode",
+                      labelStyle: TextStyle(
+                          color: Colors.black, fontStyle: FontStyle.normal),
+                      hintText: "629602",
+                      prefixIcon: Icon(
+                        Icons.location_on_outlined,
+                        color: Colors.tealAccent[700],
+                      ),
+                      enabledBorder:
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius
+                          .circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50],
+                            width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                          BorderSide(color: Colors.tealAccent[700], width: 1))
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -617,7 +716,8 @@ class _CreateaccountState extends State<Createaccount> {
                     if (_controller.text == null) {
                       return "Please Enter email";
                     }
-                    if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                    if (!RegExp(
+                        r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
                         .hasMatch(_controller.text)) {
                       return "Please enter valid email";
                     }
@@ -642,8 +742,10 @@ class _CreateaccountState extends State<Createaccount> {
                         color: Colors.tealAccent[700],
                       ),
                       enabledBorder:
-                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: Colors.blueGrey[50], width: 1),
+                      OutlineInputBorder(borderRadius: BorderRadius.all(Radius
+                          .circular(8.0)),
+                        borderSide: BorderSide(color: Colors.blueGrey[50],
+                            width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
@@ -665,7 +767,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(15.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -781,10 +883,12 @@ class _CreateaccountState extends State<Createaccount> {
                           ),
                         ),
                       ),
+
                     ),
                   ),
                   onPressed: () async {
                     // saveName();
+                  //  getUserDetails("gp6iPRnXUpd0M2nbUYFPdsxszkk1");
                     if (_formkey.currentState.validate()) {
                       setState(() {
                         showLoading = true;
@@ -792,7 +896,7 @@ class _CreateaccountState extends State<Createaccount> {
 
                       await _auth.verifyPhoneNumber(
                         phoneNumber:
-                            countryCode.toString() + phoneController.text,
+                        countryCode.toString() + phoneController.text,
                         verificationCompleted: (phoneAuthCredential) async {
                           setState(() {
                             showLoading = false;
@@ -833,6 +937,17 @@ class _CreateaccountState extends State<Createaccount> {
               ),
               color: Colors.tealAccent[700],
               textColor: Colors.white,
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.settings,
+                color: Colors.greenAccent,
+                size: 28,
+              ),
+              color: Colors.white,
+              onPressed: () {
+               // getUserDetails("SwpwtKr6PfYw53TVCNVM");
+              },
             ),
           ]),
         ),
@@ -889,7 +1004,7 @@ class _CreateaccountState extends State<Createaccount> {
                   //       );
                   //     });
                   setState(() {
-                    pinCode=pin;
+                    pinCode = pin;
                   });
                 },
 
@@ -929,7 +1044,7 @@ class _CreateaccountState extends State<Createaccount> {
                   borderRadius: BorderRadius.circular(15.0),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset(0,5),
+                      offset: Offset(0, 5),
                       blurRadius: 5.0,
                       color: Colors.black.withOpacity(0.10),
                     ),
@@ -941,15 +1056,14 @@ class _CreateaccountState extends State<Createaccount> {
                     print(pinCode);
                     PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(
-                        verificationId: verificationId, smsCode:pinCode);
+                        verificationId: verificationId, smsCode: pinCode);
 
 
                     signInWithPhoneAuthCredential(phoneAuthCredential);
-
                   },
                   //onPressed: () async {
                   //  await SmsAutoFill().listenForCode;
-                 // },
+                  // },
                   /*onPressed: () async {
                     await _auth.signOut();
                     Navigator.pushReplacement(context,
@@ -964,31 +1078,40 @@ class _CreateaccountState extends State<Createaccount> {
                 ),
               ),
             ],
+
+
           ),
+
         ),
       ),
+
     );
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   @override
   void dispose() {
     SmsAutoFill().unregisterListener();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.height;
+    double size = MediaQuery
+        .of(context)
+        .size
+        .height;
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
         child: showLoading
             ? Center(
-                child: CircularProgressIndicator(),
-              )
+          child: CircularProgressIndicator(),
+        )
             : currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                ? getMobileFormWidget(context)
-                : getOtpFormWidget(context),
+            ? getMobileFormWidget(context)
+            : getOtpFormWidget(context),
       ),
     );
   }
@@ -1010,3 +1133,48 @@ class _CreateaccountState extends State<Createaccount> {
 //   String name =prefs.getString("name");
 //   return name;
 // }
+void getUserDetails(String uid,BuildContext floraContext) {
+  FirebaseFirestore.instance.collection("UserDetails").doc(uid).get().then((
+      querySnapshot) async {
+    querySnapshot.data();
+    print("uid");
+
+    print(querySnapshot.data().toString());
+    String phoneNumber = querySnapshot.get("displayPhNum");
+    String address = querySnapshot.get("displayAddress");
+    String uid = querySnapshot.get("uid");
+    String name = querySnapshot.get("displayName");
+    String dob = querySnapshot.get("displayDob");
+    String pin = querySnapshot.get("displayPin");
+    String email = querySnapshot.get("displayEmail");
+
+    var map = new Map();
+    map['phoneNumber'] = phoneNumber;
+    map['address'] = address;
+    map['uid'] = uid;
+    map['name'] = name;
+    map['dob'] = dob;
+    map['pin'] = pin;
+    map['email'] = email;
+
+    String rawJson = jsonEncode(map);
+
+    // Setting data in local Storage
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("user_details", rawJson);
+
+    if (uid == "ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
+      Navigator.push(
+          floraContext, MaterialPageRoute(builder: (context) => StatusInfo()));
+    } else {
+      Navigator.push(
+          floraContext, MaterialPageRoute(builder: (context) => Home1()));
+    }
+
+    //getting Data from local Storage
+    // final rawDecodedStorageJson= prefs.getString("user_details");
+    // Map<String,dynamic> map1=jsonDecode(rawDecodedStorageJson);
+    // print("decoded Data ===> "+ map1.toString());
+
+  });
+}

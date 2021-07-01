@@ -1,12 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdownfield/dropdownfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vishramapp/Settings.dart';
 import 'package:image_picker/image_picker.dart';
 void main() {
+  SharedPreferences prefs;
   runApp(MaterialApp(
+
+
+
     supportedLocales: [
       Locale("af"),
       Locale("am"),
@@ -91,7 +97,12 @@ class Editprofile extends StatefulWidget {
   @override
   _EditprofileState  createState() => _EditprofileState();
 }
-
+Future<void> getValues() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String rawDecodedStorageJson= prefs.getString("user_details");
+  Map<String,String> map1=jsonDecode(rawDecodedStorageJson);
+  print("decoded Data in getvaluse ===> "+ map1.toString());
+}
 class _EditprofileState extends State<Editprofile> {
   String valueChooseState;
   String valueChooseCity;
@@ -183,11 +194,9 @@ class _EditprofileState extends State<Editprofile> {
     "629003",
     "629003",
   ];
-
-
   @override
-
   Widget build(BuildContext context) {
+   // getValues();
     double width = MediaQuery
         .of(context)
         .size
@@ -653,6 +662,7 @@ class _EditprofileState extends State<Editprofile> {
                       context,
                       MaterialPageRoute(builder: (context) => Settingspage()),
                     );
+
                   },
                 ),
               ],

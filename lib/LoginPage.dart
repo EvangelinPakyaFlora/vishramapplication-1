@@ -14,6 +14,7 @@ import 'package:vishramapp/firebase_net.dart';
 import 'package:vishramapp/home_screen.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   runApp(MaterialApp(
     supportedLocales: [
@@ -170,6 +171,8 @@ class _LoginState extends State<Login> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
   CountryCode countryCode=CountryCode(dialCode: "+91");
+  final pinCodeController = TextEditingController();
+  final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
   TextEditingController _controller = TextEditingController();
@@ -205,7 +208,7 @@ class _LoginState extends State<Login> {
         User updateUser = FirebaseAuth.instance.currentUser;
         updateUser.updateProfile(displayName: nameController.text,);
         //updateUser.updateProfile(displayAddress: addressController.text);
-        userSetup(nameController.text,addressController.text,dobController.text,phoneController.text);
+        userSetup(nameController.text,dobController.text,addressController.text,pinCodeController.text,_controller.text,phoneController.text);
         if (uid1=="ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => StatusInfo()));
