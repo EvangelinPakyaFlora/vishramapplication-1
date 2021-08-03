@@ -5,15 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:multi_masked_formatter/multi_masked_formatter.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:vishramapp/Status.dart';
-import 'package:vishramapp/User.dart';
 import 'package:vishramapp/firebase_net.dart';
 import 'package:vishramapp/home_screen.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -110,11 +109,12 @@ class Createaccount extends StatefulWidget {
 }
 
 class _CreateaccountState extends State<Createaccount> {
+  CountryCode countryCode= CountryCode(dialCode: "+91");
   FirebaseAuth _auth;
   User _user;
   bool isLoading = true;
+  //String signCode;
   String _name, _dob, _address, _state, _city, _pin, _email, _phone;
-
 
   void initState() {
     // TODO: implement initState
@@ -122,10 +122,11 @@ class _CreateaccountState extends State<Createaccount> {
     _auth = FirebaseAuth.instance;
     _user = _auth.currentUser;
     isLoading = false;
-  }
 
+    //otpListener();
+  }
   final FirebaseAuth auth = FirebaseAuth.instance;
-  String valueChoose;
+  String valueChooseCity;
   String valueChooseState;
   List<String> listItemCity = [
     "chennai",
@@ -209,15 +210,14 @@ class _CreateaccountState extends State<Createaccount> {
   ];
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-  CountryCode countryCode;
-  final pinCodeController = TextEditingController();
-  final stateController = TextEditingController();
+  //CountryCode countryCode;
 
-  //final emailController = TextEditingController();
+  final stateController = TextEditingController();
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final dobController = TextEditingController();
+  final pinCodeController = TextEditingController();
   final otpController = TextEditingController();
   TextEditingController _controller = TextEditingController();
   String verificationId;
@@ -240,33 +240,28 @@ class _CreateaccountState extends State<Createaccount> {
       var uid1 = authCredential.user.uid;
       if (authCredential?.user != null) {
         print("authCredential ====> " + authCredential.toString());
-        getUserDetails(uid1,context);
+        //getUserDetails(uid1,context);
 
-        // if (uid1 == "ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
-        //   Navigator.push(
-        //       context, MaterialPageRoute(builder: (context) => StatusInfo()));
-        // } else {
-        //   Navigator.push(
-        //       context, MaterialPageRoute(builder: (context) => Home1()));
-        // }
-
-      //   User updateUser = FirebaseAuth.instance.currentUser;
-      //   updateUser.updateProfile(displayName: nameController.text,);
-      //   userSetup(
-      //       nameController.text, dobController.text, addressController.text,
-      //       pinCodeController.text, _controller.text, phoneController.text);
-       }
-    } on FirebaseAuthException catch (e) {
+        if (uid1 == "ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => StatusInfo()));
+        } else {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Home1()));
+        }
+        User updateUser = FirebaseAuth.instance.currentUser;
+    updateUser.updateProfile(displayName: nameController.text,);
+    userSetup(
+    nameController.text, dobController.text, addressController.text, pinCodeController.text,_controller.text, phoneController.text, valueChooseState,valueChooseCity,);
+  }
+} on FirebaseAuthException catch (e) {
       setState(() {
         showLoading = false;
       });
-      _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text(e.message)));
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
-
   String value;
-
   getMobileFormWidget(context) {
     MediaQueryData deviceInfo = MediaQuery.of(context);
     return Scaffold(
@@ -387,6 +382,10 @@ class _CreateaccountState extends State<Createaccount> {
                   ],
                 ),
                 child: TextFormField(
+                  // inputFormatters: [
+                  //   MultiMaskedTextInputFormatter(
+                  //       masks: ['xx-xx-xxxx', 'xx-xx-xxxx'], separator: '/')
+                  // ],
                   controller: dobController,
                   maxLines: 1,
                   cursorHeight: 20,
@@ -409,7 +408,7 @@ class _CreateaccountState extends State<Createaccount> {
                       labelText: "D.O.B",
                       labelStyle: TextStyle(
                           color: Colors.black, fontStyle: FontStyle.normal),
-                      hintText: "DD/MM/YEAR",
+                      hintText: "DD/MM/YYYY",
                       prefixIcon: Icon(
                         Icons.calendar_today_outlined,
                         color: Colors.tealAccent[700],
@@ -513,6 +512,7 @@ class _CreateaccountState extends State<Createaccount> {
                       width: 280,
                       child: DropdownButtonFormField(
                         // controller: stateController,
+                        value:valueChooseState,
                           validator: (String value) {
                             if (value.isEmpty) {
                               return "Please Enter state";
@@ -543,9 +543,8 @@ class _CreateaccountState extends State<Createaccount> {
                           iconSize: 36,
                           isExpanded: true,
 
-
                           style: TextStyle(color: Colors.black, fontSize: 15),
-                          value: valueChooseState,
+                          // value: valueChooseState,
                           onChanged: (newValue) {
                             setState(() {
                               valueChooseState = newValue;
@@ -591,10 +590,10 @@ class _CreateaccountState extends State<Createaccount> {
                     SizedBox(
                       width: 280,
                       child: DropdownButtonFormField(
-                        value: valueChoose,
+                        value: valueChooseCity,
                         onChanged: (newValue) {
                           setState(() {
-                            valueChoose = newValue;
+                            valueChooseCity = newValue;
                           });
                         },
                         items: listItemCity.map((valueItem) {
@@ -653,6 +652,7 @@ class _CreateaccountState extends State<Createaccount> {
                   ],
                 ),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   controller: pinCodeController,
                   autovalidate: _validate,
                   validator: (String value) {
@@ -661,8 +661,8 @@ class _CreateaccountState extends State<Createaccount> {
                     }
                     return null;
                   },
-                  onSaved: (String pin) {
-                    _pin = pin;
+                  onSaved: (String pinvalue) {
+                    _pin = pinvalue;
                   },
                   style: TextStyle(color: Colors.black),
                   autocorrect: true,
@@ -673,7 +673,7 @@ class _CreateaccountState extends State<Createaccount> {
                       labelText: "Pincode",
                       labelStyle: TextStyle(
                           color: Colors.black, fontStyle: FontStyle.normal),
-                      hintText: "629602",
+                      hintText: "Pincode",
                       prefixIcon: Icon(
                         Icons.location_on_outlined,
                         color: Colors.tealAccent[700],
@@ -711,6 +711,7 @@ class _CreateaccountState extends State<Createaccount> {
                 child: TextFormField(
                   controller: _controller,
                   autovalidate: _validate,
+                  keyboardType: TextInputType.emailAddress,
                   validator: (String value) {
                     print("email");
                     if (_controller.text == null) {
@@ -750,7 +751,6 @@ class _CreateaccountState extends State<Createaccount> {
                       focusedBorder: OutlineInputBorder(
                           borderSide:
                           BorderSide(color: Colors.tealAccent[700], width: 1))
-
                   ),
                 ),
               ),
@@ -780,7 +780,6 @@ class _CreateaccountState extends State<Createaccount> {
                           setState(() {
                             countryCode = code;
                           });
-
                           print(code);
                         },
                         initialSelection: '+91',
@@ -797,6 +796,7 @@ class _CreateaccountState extends State<Createaccount> {
                     ),
                     Expanded(
                       child: TextFormField(
+
                         autovalidate: _validate,
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -822,7 +822,6 @@ class _CreateaccountState extends State<Createaccount> {
 
                           contentPadding: const EdgeInsets.all(8.0),
                           filled: true,
-
                           hintStyle: TextStyle(
                             height: 2.5,
                           ),
@@ -883,17 +882,19 @@ class _CreateaccountState extends State<Createaccount> {
                           ),
                         ),
                       ),
-
                     ),
                   ),
                   onPressed: () async {
+                    //getUserDetails("ubF4sTuUWKSX7tTmEGiZIOmA99A3",  context);
+                   // await SmsAutoFill().listenForCode;
                     // saveName();
-                  //  getUserDetails("gp6iPRnXUpd0M2nbUYFPdsxszkk1");
+                   //getUserDetails;
+                    //final signCode= await SmsAutoFill().getAppSignature;
+                   // print(signCode);
                     if (_formkey.currentState.validate()) {
                       setState(() {
                         showLoading = true;
                       });
-
                       await _auth.verifyPhoneNumber(
                         phoneNumber:
                         countryCode.toString() + phoneController.text,
@@ -901,7 +902,7 @@ class _CreateaccountState extends State<Createaccount> {
                           setState(() {
                             showLoading = false;
                           });
-                          //signInWithPhoneAuthCredential(phoneAuthCredential);
+                          signInWithPhoneAuthCredential(phoneAuthCredential);
                         },
                         verificationFailed: (verificationFailed) async {
                           setState(() {
@@ -926,29 +927,12 @@ class _CreateaccountState extends State<Createaccount> {
                       });
                     }
                   },
-
-                  /*onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeO()),
-                    );
-                  },*/
                 ),
               ),
               color: Colors.tealAccent[700],
               textColor: Colors.white,
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.settings,
-                color: Colors.greenAccent,
-                size: 28,
-              ),
-              color: Colors.white,
-              onPressed: () {
-               // getUserDetails("SwpwtKr6PfYw53TVCNVM");
-              },
-            ),
+
           ]),
         ),
       ),
@@ -956,6 +940,7 @@ class _CreateaccountState extends State<Createaccount> {
   }
 
   getOtpFormWidget(context) {
+    listenOtp();
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -992,17 +977,17 @@ class _CreateaccountState extends State<Createaccount> {
                   fontSize: 14,
                 ),
               ),
+              // PinFieldAutoFill(
+              //   codeLength: 6,
+              //  onCodeChanged: (String pin) {
+              //     setState(() {
+              //       pinCode = pin;
+              //    });
+              //     },
+              // ),
               PinEntryTextField(
                 fields: 6,
                 onSubmit: (String pin) {
-                  // showDialog(
-                  //     context: context,
-                  //     builder: (context) {
-                  //       return AlertDialog(
-                  //         title: Text("Pin"),
-                  //         content: Text('Pin entered is $pin'),
-                  //       );
-                  //     });
                   setState(() {
                     pinCode = pin;
                   });
@@ -1061,7 +1046,7 @@ class _CreateaccountState extends State<Createaccount> {
 
                     signInWithPhoneAuthCredential(phoneAuthCredential);
                   },
-                  //onPressed: () async {
+                  // onPressed: () async {
                   //  await SmsAutoFill().listenForCode;
                   // },
                   /*onPressed: () async {
@@ -1090,13 +1075,9 @@ class _CreateaccountState extends State<Createaccount> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  @override
-  void dispose() {
-    SmsAutoFill().unregisterListener();
-    super.dispose();
-  }
 
   @override
+
   Widget build(BuildContext context) {
     double size = MediaQuery
         .of(context)
@@ -1114,15 +1095,12 @@ class _CreateaccountState extends State<Createaccount> {
             : getOtpFormWidget(context),
       ),
     );
+
   }
-
-//   void saveName() {
-// String name =_controller.text;
-// saveNamedPreference(name).then((bool commited) => Navigator.push(
-//     context, MaterialPageRoute(builder: (context) => Home1())));
-//   }
+  void listenOtp() async{
+    await SmsAutoFill().listenForCode;
+  }
 }
-
 // Future<bool> saveNamedPreference(String name)async{
 //    SharedPreferences prefs = await SharedPreferences.getInstance();
 //    prefs.setString("name",name);
@@ -1133,12 +1111,12 @@ class _CreateaccountState extends State<Createaccount> {
 //   String name =prefs.getString("name");
 //   return name;
 // }
-void getUserDetails(String uid,BuildContext floraContext) {
+void getUserDetails(String uid,BuildContext Context) {
+  //var firebaseUser = await FirebaseAuth.instance.currentUser();
   FirebaseFirestore.instance.collection("UserDetails").doc(uid).get().then((
       querySnapshot) async {
     querySnapshot.data();
     print("uid");
-
     print(querySnapshot.data().toString());
     String phoneNumber = querySnapshot.get("displayPhNum");
     String address = querySnapshot.get("displayAddress");
@@ -1158,17 +1136,16 @@ void getUserDetails(String uid,BuildContext floraContext) {
     map['email'] = email;
 
     String rawJson = jsonEncode(map);
-
     // Setting data in local Storage
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("user_details", rawJson);
 
     if (uid == "ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
       Navigator.push(
-          floraContext, MaterialPageRoute(builder: (context) => StatusInfo()));
+          Context, MaterialPageRoute(builder: (context) => StatusInfo()));
     } else {
       Navigator.push(
-          floraContext, MaterialPageRoute(builder: (context) => Home1()));
+          Context, MaterialPageRoute(builder: (context) => Home1()));
     }
 
     //getting Data from local Storage
@@ -1176,5 +1153,15 @@ void getUserDetails(String uid,BuildContext floraContext) {
     // Map<String,dynamic> map1=jsonDecode(rawDecodedStorageJson);
     // print("decoded Data ===> "+ map1.toString());
 
-  });
+  }
+  );
 }
+//print(phoneNumber);
+
+// to validate date of birth
+// formater(){
+//   var now = new DateTime.now(); //or u can pass the input text like _textController.text
+//   var formatter = new DateFormat('dd-MM-yyyy');
+//   String formatted = formatter.format(now);
+//   print(formatted);
+// }

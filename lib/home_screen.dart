@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vishramapp/Settings.dart';
+import 'package:vishramapp/Status.dart';
 import 'package:vishramapp/support_call.dart';
 
 void main() async {
@@ -129,6 +130,7 @@ class _Home1State extends State<Home1> {
                               size: 28,
                             ),
                             color: Colors.white,
+
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -146,6 +148,7 @@ class _Home1State extends State<Home1> {
           SizedBox(
             height: 90,
           ),
+
           Container(
             decoration: BoxDecoration(
               color: Colors.yellowAccent[100],
@@ -174,11 +177,11 @@ class _Home1State extends State<Home1> {
                       color: Colors.transparent,
                     ),
                     onPressed: () {
-                       launch("tel://7639292332");
+                      // launch("tel://7639292332");
                      // _makingPhoneCall();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Support()),
+                        MaterialPageRoute(builder: (context) => StatusInfo()),
                       );
                     },
                   ),
@@ -223,14 +226,16 @@ class _Home1State extends State<Home1> {
         ],
       ),
     );
+
   }
+
 }
 
-/*_makingPhoneCall() async {
+_makingPhoneCall() async {
   const url = '7639292332';
   if (await canLaunch(url)) {
     await launch(url);
   } else {
     throw 'Could not launch $url';
   }
-}*/
+}

@@ -85,15 +85,15 @@ class _SettingspageState extends State<Settingspage> {
                       Container(
                         height: 50,
                         width: 220,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            onPressed: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Editprofile()),
-                              );
-                            },
+                        child: FlatButton(
+                          onPressed: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Editprofile()),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -116,7 +116,7 @@ class _SettingspageState extends State<Settingspage> {
           ),
 
           Align(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.centerLeft,
             child: Column(
               children: [
                 Padding(
@@ -151,7 +151,7 @@ class _SettingspageState extends State<Settingspage> {
                               height: 55,
                               width: 170,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 3),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -261,7 +261,7 @@ class _SettingspageState extends State<Settingspage> {
                           height: 55,
                           width: 170,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -319,12 +319,15 @@ class _SettingspageState extends State<Settingspage> {
                             child: Container(
                               height: 55,
                               width: 170,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "About us",
-                                  style:
-                                      TextStyle(fontSize: 25, color: Colors.black),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "About us",
+                                    style:
+                                        TextStyle(fontSize: 25, color: Colors.black),
+                                  ),
                                 ),
                               ),
                             ),

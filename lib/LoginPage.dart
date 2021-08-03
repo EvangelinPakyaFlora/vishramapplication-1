@@ -12,9 +12,10 @@ import 'package:vishramapp/cloudmessages/message.dart';
 import 'package:vishramapp/createAccount.dart';
 import 'package:vishramapp/firebase_net.dart';
 import 'package:vishramapp/home_screen.dart';
+// import 'package:flutter_localizations/flutter_localizations.dart';
+//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp();
   runApp(MaterialApp(
     supportedLocales: [
@@ -89,12 +90,15 @@ void main()async{
       Locale("vi"),
       Locale("zh")
     ],
-    localizationsDelegates: [
-      CountryLocalizations.delegate,
-    ],
     // localizationsDelegates: [
-    //   CountryLocalizations.delegate
-    // ],
+    //  AppLocalizations.delegate, // Add this line
+    //  GlobalMaterialLocalizations.delegate,
+    //  GlobalWidgetsLocalizations.delegate,
+    //  GlobalCupertinoLocalizations.delegate,
+    //  ],
+    localizationsDelegates: [
+      CountryLocalizations.delegate
+    ],
     debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
@@ -170,7 +174,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-  CountryCode countryCode=CountryCode(dialCode: "+91");
+  CountryCode countryCode= CountryCode(dialCode: "+91");
+  String valueChooseState ;
+  String valueChooseCity ;
   final pinCodeController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -208,7 +214,7 @@ class _LoginState extends State<Login> {
         User updateUser = FirebaseAuth.instance.currentUser;
         updateUser.updateProfile(displayName: nameController.text,);
         //updateUser.updateProfile(displayAddress: addressController.text);
-        userSetup(nameController.text,dobController.text,addressController.text,pinCodeController.text,_controller.text,phoneController.text);
+        //userSetup(nameController.text,dobController.text,addressController.text,pinCodeController.text,_controller.text,phoneController.text,valueChooseState,valueChooseCity);
         if (uid1=="ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => StatusInfo()));
@@ -326,6 +332,7 @@ class _LoginState extends State<Login> {
                           ),
                           Expanded(
                             child: TextFormField(
+                              keyboardType: TextInputType.number,
                               autovalidate: autoValidate,
                               validator: (String value) {
                                 if (value.isEmpty)
@@ -341,7 +348,7 @@ class _LoginState extends State<Login> {
                               },
                               controller: phoneController,
 
-                              keyboardType: TextInputType.number,
+                              //keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 // prefixIcon: CountryCodePicker(),
                                 filled: true,
@@ -484,6 +491,7 @@ class _LoginState extends State<Login> {
     );
   }
   getOtpFormWidget(context) {
+    _listenOtp();
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -553,7 +561,7 @@ class _LoginState extends State<Login> {
                   ),
                   InkWell(
                     child: Text(
-                      ' Sign',
+                      'Resend otp',
                       style: TextStyle(
                           fontSize: 20.0,
                           color: Colors.tealAccent[700],
@@ -567,7 +575,18 @@ class _LoginState extends State<Login> {
                 height: 20,
               ),
               Container(
-                decoration: BoxDecoration(color: Colors.tealAccent[700]),
+                width: 250,
+                decoration: BoxDecoration(
+                    color: Colors.tealAccent[700],
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0,5),
+                      blurRadius: 5.0,
+                      color: Colors.black.withOpacity(0.10),
+                    )
+                  ]
+                ),
                 child: FlatButton(
                   onPressed: () async {
                     print(verificationId);
@@ -575,8 +594,6 @@ class _LoginState extends State<Login> {
                     PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(
                         verificationId: verificationId, smsCode:pinCode);
-
-
                     signInWithPhoneAuthCredential(phoneAuthCredential);
 
                   },
@@ -599,7 +616,6 @@ class _LoginState extends State<Login> {
     );
   }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  
   @override
 void initState(){
     super.initState();

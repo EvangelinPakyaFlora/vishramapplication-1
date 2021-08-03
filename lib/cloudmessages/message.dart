@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 class MainPage extends StatelessWidget {
   final String appTitle;
 
-  const MainPage({this.appTitle});
+  const MainPage({ this.appTitle});
 
   @override
   Widget build(BuildContext context) => Scaffold(

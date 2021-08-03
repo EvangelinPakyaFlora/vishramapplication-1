@@ -7,14 +7,12 @@ void main() {
     home: Support(),
   ));
 }
-
 class Support extends StatefulWidget {
   const Support({Key key}) : super(key: key);
 
   @override
   _SupportState createState() => _SupportState();
 }
-
 class _SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
@@ -84,7 +82,8 @@ class _SupportState extends State<Support> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
         ),
       ),
-      Text('+91 9894471417'),
+      Text('+91 8754793901'),
+
       SizedBox(
         height: 200,
         child: CircleAvatar(
@@ -93,7 +92,7 @@ class _SupportState extends State<Support> {
           child: IconButton(
             icon :Icon(Icons.call, size: 25.0,
               color: Colors.white,),
-onPressed: (){
+   onPressed: (){
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => Home1()),

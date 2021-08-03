@@ -1,18 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_code_picker/country_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdownfield/dropdownfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vishramapp/Settings.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vishramapp/Status.dart';
+import 'package:vishramapp/home_screen.dart';
+import 'package:image_cropper/image_cropper.dart';
 void main() {
   SharedPreferences prefs;
   runApp(MaterialApp(
-
-
-
     supportedLocales: [
       Locale("af"),
       Locale("am"),
@@ -103,13 +105,19 @@ Future<void> getValues() async {
   Map<String,String> map1=jsonDecode(rawDecodedStorageJson);
   print("decoded Data in getvaluse ===> "+ map1.toString());
 }
-class _EditprofileState extends State<Editprofile> {
+class _EditprofileState extends State<Editprofile> {final pinCodeController = TextEditingController();
+final nameController = TextEditingController();
+final dobController = TextEditingController();
+final addressController = TextEditingController();
+final emailController = TextEditingController();
+final phoneNumberController = TextEditingController();
   String valueChooseState;
   String valueChooseCity;
-  String valueChoosePin;
+  // String valueChoosePin;
   PickedFile _imageFile;
+  //CroppedFile _croppedFile;
   final ImagePicker _picker = ImagePicker();
-
+  final ImageCropper _cropper = ImageCropper();
   List<String> listItemState = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -189,11 +197,60 @@ class _EditprofileState extends State<Editprofile> {
     "Virudhunagar"
 
   ];
-  List<String> listItemPin = [
-    "629002",
-    "629003",
-    "629003",
-  ];
+  // List<String> listItemPin = [
+  //   "629002",
+  //   "629003",
+  //   "629003",
+  // ];
+  var map = new Map();
+  // String get uid => null;
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
+  }
+  void getUserDetails() {
+    var firebaseUser =  FirebaseAuth.instance.currentUser;
+    print("uid"+firebaseUser.uid.toString());
+   // print('updateUserData ===> '+ updateUserData.toString());
+    FirebaseFirestore.instance.collection("UserDetails").where("uid", isEqualTo : firebaseUser.uid).get().then((
+        querySnapshot) async {
+      querySnapshot.docs.forEach((element) {});
+      querySnapshot.docs[0].data();
+      //print("uid"+firebaseUser);
+      print(querySnapshot.docs[0].data().toString());
+      nameController.text = querySnapshot.docs[0].data()["displayName"];
+      dobController.text = querySnapshot.docs[0].data()["displayDob"];
+      addressController.text = querySnapshot.docs[0].data()["displayAddress"];
+      pinCodeController.text=querySnapshot.docs[0].data()["displayPin"];
+     //valueChoosePin = querySnapshot.data()["displayPin"];
+      emailController.text = querySnapshot.docs[0].data()["displayEmail"];
+      phoneNumberController.text = querySnapshot.docs[0].data()["displayPhNum"];
+      valueChooseState =querySnapshot.docs[0].data()["displayState"];
+      valueChooseCity =querySnapshot.docs[0].data()["displayCity"];
+      setState(() {
+      });
+      String rawJson = jsonEncode(map);
+      // Setting data in local Storage
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString("UserDetails", rawJson);
+      // if (uid == "ubF4sTuUWKSX7tTmEGiZIOmA99A3") {
+      //   Navigator.push(
+      //       floraContext, MaterialPageRoute(builder: (context) => StatusInfo()));
+      // } else {
+      //   Navigator.push(
+      //       floraContext, MaterialPageRoute(builder: (context) => Home1()));
+      // }
+
+      //getting Data from local Storage
+      // final rawDecodedStorageJson= prefs.getString("user_details");
+      // Map<String,dynamic> map1=jsonDecode(rawDecodedStorageJson);
+      // print("decoded Data ===> "+ map1.toString());
+    }
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
    // getValues();
@@ -262,6 +319,7 @@ class _EditprofileState extends State<Editprofile> {
               child: Container(
                 width: 350,
                 child: TextField(
+                  controller: nameController,
                   decoration: InputDecoration(
 
                     focusedBorder: UnderlineInputBorder(
@@ -289,6 +347,8 @@ class _EditprofileState extends State<Editprofile> {
               child: Container(
                 width: 350,
                 child: TextField(
+                  keyboardType: TextInputType.number,
+                    controller:dobController,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.tealAccent[700]),
@@ -315,6 +375,7 @@ class _EditprofileState extends State<Editprofile> {
               child: Container(
                 width: 350,
                 child: TextField(
+                  controller: addressController,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.tealAccent[700]),
@@ -371,7 +432,7 @@ class _EditprofileState extends State<Editprofile> {
                     color: Colors.tealAccent[700],
                   ),
                   SizedBox(
-                    width: 290,
+                    width: 310,
                     child: DropdownButtonFormField(
                         hint: Text(
                           "City",
@@ -408,7 +469,7 @@ class _EditprofileState extends State<Editprofile> {
                   color: Colors.tealAccent[700],
                 ),
                 SizedBox(
-                  width: 130,
+                  width: 140,
                   child: DropdownButtonFormField(
                       hint: Text(
                         "State",
@@ -433,80 +494,30 @@ class _EditprofileState extends State<Editprofile> {
                       }).toList()),
                 ),
                 Spacer(),
-
                 SizedBox(
-                  width: 155,
+                  width: 150,
                   child: Container(
-                    child: DropdownButtonFormField(
-                      value: valueChoosePin,
-                      onChanged: (newValue) {
-                        setState(() {
-                          valueChoosePin = newValue;
-                        });
-                      },
-                      items: listItemPin.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList(),
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      isExpanded: true,
-                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller: pinCodeController,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 4.0, horizontal: 1.0),
-
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.tealAccent[700]),
+                        ),
                         labelText: 'PinCode',
                         labelStyle: TextStyle(color: Colors.black),
-                        hintText: 'PinCode',
-                        hintStyle:
-                        TextStyle(fontSize: 10.0, color: Colors.black),
+                        //hintText: 'evangflora@gmail.com',
+                        hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
                         prefixIcon: Icon(
                           Icons.location_on,
                           color: Colors.tealAccent[700],
                         ),
                       ),
                     ),
+
                   ),
                 ),
 
-                /* Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(
-                Icons.location_city,
-                size: 25,
-                color: Colors.tealAccent[700],
-              ),
-              SizedBox(
-                width: 250,
-                child: DropdownButton(
-                    hint: Text(
-                      "Tamil Nadu",
-                    ),
-                    dropdownColor: Colors.white,
-                    icon: Icon(Icons.arrow_drop_down),
-                    iconSize: 36,
-                    isExpanded: true,
-                    underline: SizedBox(),
-                    style: TextStyle(color: Colors.black, fontSize: 15),
-                    value: valueChoose,
-                    onChanged: (newValue) {
-                      setState(() {
-                        valueChoose = newValue;
-                      });
-                    },
-                    items: listItem2.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
-                      );
-                    }).toList()),
-              ),
-            ],
-          ),*/
               ]),
             ),
             SizedBox(
@@ -517,6 +528,8 @@ class _EditprofileState extends State<Editprofile> {
               child: Container(
                 width: 340,
                 child: TextField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.tealAccent[700]),
@@ -557,6 +570,8 @@ class _EditprofileState extends State<Editprofile> {
                   ),
                   Expanded(
                     child: TextField(
+                      //keyboardType: TextInputType.number,
+                      controller: phoneNumberController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         focusedBorder: UnderlineInputBorder(
@@ -575,23 +590,7 @@ class _EditprofileState extends State<Editprofile> {
                 ],
               ),
             ),
-            /*Container(
-              width: 350,
-              child: TextField(
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                  labelText: 'City',
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: 'chennai',
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.location_city,
-                    color: Colors.greenAccent,
-                  ),
-                ),
-              ),
-            ),*/
+
             SizedBox(
               height: 30,
             ),
@@ -658,11 +657,11 @@ class _EditprofileState extends State<Editprofile> {
                   color: Colors.tealAccent[700],
                   textColor: Colors.white,
                   onPressed: () {
+                    updateData();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Settingspage()),
                     );
-
                   },
                 ),
               ],
@@ -690,7 +689,8 @@ class _EditprofileState extends State<Editprofile> {
           SizedBox(
             height: 20,
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
             FlatButton.icon(
               icon: Icon(Icons.camera),
               onPressed: () {
@@ -739,18 +739,78 @@ class _EditprofileState extends State<Editprofile> {
       ]),
     );
   }
-
   void takePhoto(ImageSource source) async {
     final pickedFile = await _picker.getImage(
       source: source,
     );
+    // final croppedFile = await ImageCropper.cropImage(
+    // aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+    //   compressQuality: 100,
+    //   maxHeight: 700,
+    //   maxWidth: 700,
+    //   compressFormat: ImageCompressFormat.jpg,
+    //   androidUiSettings: AndroidUiSettings(
+    //     toolbarColor: Colors.tealAccent,
+    //     toolbarTitle: "Cropper",
+    //     statusBarColor: Colors.tealAccent,
+    //     backgroundColor: Colors.tealAccent,
+    //   )
+    // );
     setState(() {
-      _imageFile = pickedFile;
-    });
+      _imageFile = pickedFile;});
   }
+  Future updateData() async {
+    // this is the function that has to edit the username
+    var firebaseUser =  FirebaseAuth.instance.currentUser;
+    return await FirebaseFirestore.instance.collection('UserDetails').doc(firebaseUser.uid).update({
+      'displayName': nameController.text,
+      'displayDob': dobController.text,
+      'displayAddress': addressController.text,
+      'displayPin': pinCodeController.text,
+      'displayEmail': emailController.text,
+      'displayPhNum': phoneNumberController.text,
+      'displayState': valueChooseState,
+      'displayCity': valueChooseCity,
+    }
+    );
+  }
+  // updateData(){
+  //   CollectionReference collectionReference = FirebaseFirestore.instance.collection("UserDetails");
+  //   var firebaseUser =  FirebaseAuth.instance.currentUser;
+  //   FirebaseFirestore.instance.collection("UserDetails").where("uid", isEqualTo : firebaseUser.uid).get().then((
+  //       querySnapshot) async {
+  //     querySnapshot.docs.forEach((element) {});
+  //     querySnapshot.docs[0].data();
+  //     //print("uid"+firebaseUser);
+  //     print(querySnapshot.docs[0].data().toString());
+  //   nameController.text = querySnapshot.docs[0].data()["displayName"];
+  //   dobController.text = querySnapshot.docs[0].data()["displayDob"];
+  //   addressController.text = querySnapshot.docs[0].data()["displayAddress"];
+  //   pinCodeController.text=querySnapshot.docs[0].data()["displayPin"];
+  //   //valueChoosePin = querySnapshot.data()["displayPin"];
+  //   emailController.text = querySnapshot.docs[0].data()["displayEmail"];
+  //   phoneNumberController.text = querySnapshot.docs[0].data()["displayPhNum"];
+  //   valueChooseState =querySnapshot.docs[0].data()["displayState"];
+  //   valueChooseCity =querySnapshot.docs[0].data()["displayCity"];
+  // }
+  // }
 
 
+// updateData(){
+//   CollectionReference collectionReference = FirebaseFirestore.instance.collection("UserDetails"){
+//     'diaplayName': nameController.text,
+//   'diaplayDob': dobController.text,
+//   'diaplayAddress': addressController.text,
+//   'diaplayPin': pinCodeController.text,
+//   'diaplayEmail': emailController.text,
+//   'diaplayPhNum': phoneNumberController.text,
+//   'diaplayState': valueChooseState,
+//   'diaplayCity': valueChooseCity,
+//   };
+//   collectionReference.setData().whenComplete((){
+//     print('created');
+//   })
+//
+//   }
+      }
 
-
-
-}
